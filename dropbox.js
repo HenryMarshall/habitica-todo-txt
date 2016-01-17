@@ -12,11 +12,30 @@ var dropbox = {
           "path": path
         })
       }
-    }, function(err, resp, body) {
-      if (err) throw err;
-      console.log(resp.statusCode, body);
-    })
+    }, logResponse)
+  },
+
+  metadataTodo: function(path) {
+    var path = path || "/todo/todo.txt";
+    request.post({
+      url: "https://api.dropboxapi.com/2/files/get_metadata",
+      headers: {
+        "Authorization": "Bearer " + options.access_token,
+        "Content-Type": "application/json"
+      },
+      json: {
+        "path": path,
+        "include_media_info": false
+      }
+    }, logResponse)
   }
 }
 
-dropbox.downloadTodo();
+function logResponse(err, resp, body) {
+  if (err) throw err;
+  console.log(resp.statusCode, body);
+}
+
+module.exports = dropbox;
+
+dropbox.metadataTodo();
