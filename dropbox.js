@@ -1,41 +1,34 @@
 var request = require("request");
 var options = require("./options");
 
-var dropbox = {
-  downloadTodo: function(path) {
-    var path = path || "/todo/todo.txt";
-    request({
-      url: "https://content.dropboxapi.com/2/files/download",
-      headers: {
-        Authorization: "Bearer " + options.access_token,
-        "Dropbox-API-Arg": JSON.stringify({
-          "path": path
-        })
-      }
-    }, logResponse)
-  },
-
-  metadataTodo: function(path) {
-    var path = path || "/todo/todo.txt";
-    request.post({
-      url: "https://api.dropboxapi.com/2/files/get_metadata",
-      headers: {
-        "Authorization": "Bearer " + options.access_token,
-        "Content-Type": "application/json"
-      },
-      json: {
-        "path": path,
-        "include_media_info": false
-      }
-    }, logResponse)
-  }
+function Dropbox(todoPath, accessToken) {
+  this.todoPath = todoPath;
+  this.accessToken = accessToken;
 }
+
+Dropbox.prototype.defaultHeaders = {
+  Authorization: "Bearer " + this.accessToken,
+  "Content-Type": "application/json"
+};
+
+Dropbox.prototype.downloadTodo = function(callback, path) {
+  request({
+    url: "https://content.dropboxapi.com/2/files/download",
+    headers: {
+      Authorization: "Bearer " + this.accessToken,
+      "Dropbox-API-Arg": JSON.stringify({
+        "path": this.todoPath
+      })
+    }
+  }, callback)
+};
 
 function logResponse(err, resp, body) {
   if (err) throw err;
   console.log(resp.statusCode, body);
 }
 
-module.exports = dropbox;
+module.exports = Dropbox;
 
-dropbox.metadataTodo();
+var dropbox = new Dropbox("/todo/todo.txt", options.access_token)
+dropbox.downloadTodo(logResponse);
