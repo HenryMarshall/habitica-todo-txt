@@ -6,9 +6,11 @@ function Dropbox(todoPath, accessToken) {
   this.accessToken = accessToken;
 }
 
-Dropbox.prototype.defaultHeaders = {
-  Authorization: "Bearer " + this.accessToken,
-  "Content-Type": "application/json"
+Dropbox.prototype.defaultHeaders = function() {
+  return {
+    Authorization: "Bearer " + this.accessToken,
+    "Content-Type": "application/json"
+  }
 };
 
 Dropbox.prototype.downloadTodo = function(callback) {
@@ -26,11 +28,7 @@ Dropbox.prototype.downloadTodo = function(callback) {
 Dropbox.prototype.revisions = function(callback) {
   request.post({
     url: "https://api.dropboxapi.com/2/files/list_revisions",
-    //headers: this.defaultHeaders,
-    headers: {
-      Authorization: "Bearer " + this.accessToken,
-      "Content-Type": "application/json"
-    },
+    headers: this.defaultHeaders(),
     json: {
       "path": this.todoPath,
       // We need all the revisions since the last last check/update. We'll need
@@ -42,10 +40,10 @@ Dropbox.prototype.revisions = function(callback) {
 
 function logResponse(err, resp, body) {
   if (err) throw err;
-  console.log(resp.statusCode, body);
+  console.log(body);
 }
 
 module.exports = Dropbox;
 
-var dropbox = new Dropbox("/todo/todo.txt", options.access_token)
+var dropbox = new Dropbox("/todo/api_test.todo.txt", options.access_token)
 dropbox.revisions(logResponse);
