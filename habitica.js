@@ -1,4 +1,5 @@
 var request = require('request');
+var Todo = require('./todo');
 var options = require('./options');
 
 function Habitica(credentials) {
@@ -10,7 +11,6 @@ function Habitica(credentials) {
 
 Habitica.prototype.baseUrl = "https://habitica.com/api/v2";
 
-// `tasks` also includes "rewards"
 Habitica.prototype.tasks = function(callback) {
   request({
     url: this.baseUrl + "/user/tasks",
@@ -22,20 +22,29 @@ Habitica.prototype.todos = function(callback) {
   this.tasks(function(err, resp, body) {
     if (err) throw err;
     var tasks = JSON.parse(body);
-    var todos = tasks.filter(function(task) {
-      return task.type === "todo";
-    });
+    // Create Todo instances for todos.
+    // `tasks` also includes "rewards", "dailies", and "habits"
+    var todos = tasks.reduce(function(todosObj, task) {
+      if (task.type === "todo") {
+        var todo = new Todo(task);
+        todosObj.push(todo);
+      }
+      return todosObj;
+    }, []);
     callback(todos);
+  });
+}
+
+Habitica.prototype.updatedTodos = function(time, callback) {
+  this.todos(function(todos) {
+    var updatedTodos = todos.filter(function(todo) {
+      return todo.wasUpdatedSince(time);
+    });
+    callback(updatedTodos);
   });
 }
 
 module.exports = Habitica;
 
 var habit = new Habitica(options.habitica);
-habit.todos(function(todos) {
-  console.log(todos);
-})
-//habit.tasks(function(err, resp, body) {
-//  if (err) throw err;
-//  console.log(resp.statusCode, body);
-//});
+habit.updatedTodos(new Date("2016-01-18"), console.log);

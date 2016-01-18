@@ -4,8 +4,10 @@ function Todo(values) {
 
 Todo.prototype.wasUpdatedSince = function (time) {
   return (
-    this.values.dateCreated > time ||
-    (this.values.dateCompleted !== undefined && this.value.dateCompleted > time)
+    new Date(this.values.dateCreated) > time || (
+      this.values.dateCompleted !== undefined && 
+      new Date(this.values.dateCompleted) > time
+    )
   );
 };
 
