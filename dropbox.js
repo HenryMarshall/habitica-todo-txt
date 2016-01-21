@@ -33,9 +33,27 @@ Dropbox.prototype.revisions = function(callback) {
       "path": this.todoPath,
       // We need all the revisions since the last last check/update. We'll need
       // to repoll if this is insufficient.
-      "limit": 10
+      "limit": 100
     }
-  }, callback)
+  }, function(err, resp, body) {
+    if (err) throw err;
+    var revisions = body.entries;
+    callback(revisions);
+  })
+}
+
+Dropbox.prototype.filterRevisions = function(firstRevision, revisions, callback) {
+  for (var ii = 0, len = revisions.length; ii < len; ii++) {
+    if (revisions[ii].rev === firstRevision) {
+      revisions.splice(ii + 1);
+      break;
+    }
+  }
+  if (revisions[revisions.length - 1].rev !== firstRevision) {
+    // TODO: I should keep fetching more revisions and concatenate them on.
+    throw new Error("revisions did not contain first revision");
+  }
+  callback(revisions);
 }
 
 function logResponse(err, resp, body) {
@@ -46,4 +64,8 @@ function logResponse(err, resp, body) {
 module.exports = Dropbox;
 
 var dropbox = new Dropbox("/todo/api_test.todo.txt", options.access_token)
-dropbox.revisions(logResponse);
+dropbox.revisions(function(revisions) {
+  dropbox.filterRevisions("18eb546f001a3a9b", revisions, function(revisions) {
+    console.log(revisions);
+  })
+});
