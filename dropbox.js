@@ -13,15 +13,18 @@ Dropbox.prototype.defaultHeaders = function() {
   }
 };
 
-Dropbox.prototype.downloadTodo = function(callback) {
+Dropbox.prototype.downloadTodo = function(revision, callback) {
+  var path = revision || this.todoPath;
+
   request({
     url: "https://content.dropboxapi.com/2/files/download",
     headers: {
       Authorization: "Bearer " + this.accessToken,
       "Dropbox-API-Arg": JSON.stringify({
-        "path": this.todoPath
+        "path": path
       })
     }
+  // Would it be better to handle the potential error raised here or in the cb?
   }, callback)
 };
 
@@ -56,6 +59,21 @@ Dropbox.prototype.filterRevisions = function(firstRevision, revisions, callback)
   callback(revisions);
 }
 
+Dropbox.prototype.getBodyOfRevisions = function(revisions, callback) {
+  var count = revisions.length;
+
+  revisions.forEach(function(revision) {
+    var revPath = "rev:" + revision.rev;
+    this.downloadTodo(revPath, function(err, resp, body) {
+      if (err) throw err;
+      revision.text = body;
+      if (--count <= 0) {
+        callback(revisions);
+      }
+    });
+  }, this);
+}
+
 function logResponse(err, resp, body) {
   if (err) throw err;
   console.log(body);
@@ -66,6 +84,6 @@ module.exports = Dropbox;
 var dropbox = new Dropbox("/todo/api_test.todo.txt", options.access_token)
 dropbox.revisions(function(revisions) {
   dropbox.filterRevisions("18eb546f001a3a9b", revisions, function(revisions) {
-    console.log(revisions);
-  })
+    dropbox.getBodyOfRevisions(revisions, console.log);
+  });
 });
