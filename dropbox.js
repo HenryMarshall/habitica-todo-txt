@@ -1,4 +1,5 @@
 var request = require("request");
+var txtParser = require("./txtParser");
 var options = require("./options");
 
 function Dropbox(todoPath, accessToken) {
@@ -25,7 +26,8 @@ Dropbox.prototype.downloadTodos = function(callback) {
     }
   }, (err, resp, body) => {
     if (err) throw err;
-    callback(body);
+    var todos = txtParser(body);
+    callback(todos);
   });
 };
 
