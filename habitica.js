@@ -49,6 +49,6 @@ module.exports = Habitica;
 var habit = new Habitica(options.habitica);
 habit.updatedTodos(new Date("2016-01-18"), function(todos) {
   todos.forEach(function(todo) {
-    console.log(todo.formatTxt());
+    console.log(todo);
   })
 });
