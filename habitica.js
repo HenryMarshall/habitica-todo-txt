@@ -35,6 +35,15 @@ Habitica.prototype.downloadTodos = function(callback) {
   });
 }
 
+Habitica.prototype.createTodo = function(todo) {
+  request({
+    url: this.baseUrl + "/user/tasks",
+    headers: this.headers,
+    method: "POST",
+    json: todo
+  }, callback(err, resp, body));
+}
+
 Habitica.prototype.updatedTodos = function(time, callback) {
   this.downloadTodos(function(todos) {
     var updatedTodos = todos.filter(function(todo) {
