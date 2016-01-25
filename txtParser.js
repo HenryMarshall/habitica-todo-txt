@@ -1,29 +1,15 @@
 var data = require('./sample_data/txt_revisions.js');
 
-if (data.length === 0) {
-  var err = new Error("No revisions for this file provided. Does it exist?");
-  throw err;
-}
-else if (data.length === 1) {
-  // No comparison to do. This is either the first run, or you hoven't written
-  // any updates to todo.txt since the last check.
-  
-  // TODO
-}
-else {
-  for(var ii=data.length - 1; ii >= 1; --ii) {
-    diff(data[ii], data[ii-1]);
-  }
-}
+var oldTodos = todosFromRevision(data[1]);
+var newTodos = todosFromRevision(data[0]);
+console.log(JSON.stringify(diff(oldTodos, newTodos), null, 4));
 
-function diff(oldRevision, newRevision) {
-  // TODO: You can potentially save cycles, by doing this elsewhere.
-  var oldTodos = todosFromRevision(oldRevision);
-  var newTodos = todosFromRevision(newRevision);
-
-  //console.log("oldTodos: ", oldTodos);
-  //console.log("newTodos: ", newTodos);
-
+function diff(oldTodos, newTodos) {
+  var updates = {
+    changed: [],
+    created: [],
+    deleted: []
+  };
 
   oldLoop: for(var ii=0, oldLen=oldTodos.length; ii < oldLen; ii++) {
     var oldTodo = oldTodos[ii];
@@ -32,27 +18,20 @@ function diff(oldRevision, newRevision) {
 
       if (oldTodo.text === newTodo.text) {
         if (newTodo.isCompleted !== oldTodo.isCompleted) {
-          if (newTodo.isCompleted) {
-            console.log("completed: " + newTodo.text);
-            // Todo completed
-          }
-          else {
-            console.log("Uncompleted: " + oldTodo.text);
-            // Todo uncompleted
-          }
+          updates.changed.push(newTodo);
         }
         newTodos.splice(jj, 1);
         continue oldLoop;
       }
     };
-    console.log("Deleted: " + oldTodo.text);
-    // oldTodo deleted
+    updates.deleted.push(oldTodo);
   };
 
   newTodos.map(newTodo => {
-    // newTodo created
-    console.log("Created: " + newTodo.text);
+    updates.created.push(newTodo);
   });
+
+  return updates;
 }
 
 function todosFromRevision(revision) {
