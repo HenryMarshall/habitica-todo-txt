@@ -18,7 +18,7 @@ Habitica.prototype.tasks = function(callback) {
   }, callback);
 }
 
-Habitica.prototype.todos = function(callback) {
+Habitica.prototype.downloadTodos = function(callback) {
   this.tasks(function(err, resp, body) {
     if (err) throw err;
     var tasks = JSON.parse(body);
@@ -36,7 +36,7 @@ Habitica.prototype.todos = function(callback) {
 }
 
 Habitica.prototype.updatedTodos = function(time, callback) {
-  this.todos(function(todos) {
+  this.downloadTodos(function(todos) {
     var updatedTodos = todos.filter(function(todo) {
       return todo.wasUpdatedSince(time);
     });
@@ -45,10 +45,3 @@ Habitica.prototype.updatedTodos = function(time, callback) {
 }
 
 module.exports = Habitica;
-
-var habit = new Habitica(options.habitica);
-habit.updatedTodos(new Date("2016-01-18"), function(todos) {
-  todos.forEach(function(todo) {
-    console.log(todo);
-  })
-});
