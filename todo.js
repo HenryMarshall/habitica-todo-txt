@@ -2,7 +2,7 @@ function Todo(values) {
   this.values = values;
 }
 
-Todo.prototype.wasUpdatedSince = function (time) {
+Todo.prototype.wasUpdatedSince = function(time) {
   return (
     new Date(this.values.dateCreated) > time || (
       this.values.dateCompleted !== undefined && 
@@ -11,11 +11,11 @@ Todo.prototype.wasUpdatedSince = function (time) {
   );
 };
 
-Todo.prototype.formatTxt = function() {
+Todo.prototype.toString = function() {
   // Should take format: "x 2016-01-17 2016-01-19 Complete my project"
   var components = [];
   components.push(formatDateString(this.values.dateCreated));
-  if (this.values.dateCompleted) {
+  if (this.values.completed) {
     components.unshift("x");
     components.push(formatDateString(this.values.dateCompleted));
   }
@@ -26,6 +26,6 @@ Todo.prototype.formatTxt = function() {
   function formatDateString(dateString) {
     return dateString.slice(0,10);
   }
-}
+};
 
 module.exports = Todo;
