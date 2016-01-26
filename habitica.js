@@ -53,6 +53,13 @@ Habitica.prototype.updateTodo = function(todo, callback) {
   }, callback(err, resp, body));
 }
 
+Habitica.prototype.deleteTodo = function(todo, callback) {
+  request({
+    url: this.baseUrl + "/user/tasks/" + todo.values.id,
+    headers: this.headers,
+    method: "DELETE"
+  }, callback(err, resp, body));
+}
 
 Habitica.prototype.updatedTodos = function(time, callback) {
   this.downloadTodos(function(todos) {
