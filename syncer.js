@@ -2,6 +2,7 @@
 var options = require('./options');
 var oldTxtTodos = options.txt.oldTodos
 
+var Todo = require('./todo');
 var Dropbox = require('./dropbox');
 var Habitica = require('./habitica');
 var txtDiffer = require("./txtDiffer");
@@ -14,7 +15,9 @@ var hab = new Habitica(options.habitica);
 var data = {
   newTxtTodos: options.txt.newTodos,
   oldTxtTodos: options.txt.oldTodos,
-  habTodos: options.habitica.todos
+  txtString: options.txt.newTodosText,
+  lastHabSync: new Date(options.habitica.lastHabSync),
+  habTodos: options.habitica.todos.map(todo => new Todo(todo))
 }
 sync(data)
 
@@ -35,9 +38,8 @@ function sync(data) {
         delete habTodo.values.dateCompleted;
       }
       habTodo.values.completed = todo.isCompleted;
-      console.log("updated: " + JSON.stringify(habTodo, null, 2));
       hab.updateTodo(habTodo);
-      overwritten.push(habTodo.id);
+      overwritten.push(habTodo.values.id);
     }
     // Even if there were only changes on the dropbox side of things, if no
     // match can be found on Habitica, we need to create the todo from scratch.
@@ -50,18 +52,38 @@ function sync(data) {
     var habTodo = habMatcher(todo, data.habTodos);
     if (habTodo) {
       hab.deleteTodo(habTodo);
-      console.log("deleted: " + JSON.stringify(habTodo, null, 2));
-      overwritten.push(habTodo.id);
+      overwritten.push(habTodo.values.id);
     }
   });
 
   updatedTodos.created.forEach(todo => {
     var habTodo = todoFactory(todo.text, todo.isCompleted, dropboxDate);
-    console.log("created: " + JSON.stringify(habTodo, null, 2));
     hab.createTodo(habTodo);
   });
 
 
+  // Now we sync todos from habitica to todo.txt
+  var linesToAdd = [];
+  var lastHabSync = data.lastHabSync;
+  var txtString = data.txtString;
+  data.habTodos.forEach(habTodo => {
+    var todoOverwritten = overwritten.indexOf(habTodo.values.id) !== -1;
+    if (habTodo.wasUpdatedSince(lastHabSync) && !todoOverwritten) {
+      if (txtString.indexOf(habTodo.values.text) !== -1) {
+        var reg = new RegExp("^.*" + habTodo.values.text + "$", "m");
+        txtString = txtString.replace(reg, habTodo.toString());
+      }
+      else {
+        linesToAdd.push(habTodo.toString());
+      }
+    }
+  });
+  
+  todosToAppend = linesToAdd.join("\n");
+  txtString += "\n" + todosToAppend;
+  txtString = txtString.replace(/\n{2,}/, "\n");
+  console.log(txtString);
+  
 
 }
 
