@@ -35,14 +35,24 @@ Habitica.prototype.downloadTodos = function(callback) {
   });
 }
 
-Habitica.prototype.createTodo = function(todo) {
+Habitica.prototype.createTodo = function(todo, callback) {
   request({
     url: this.baseUrl + "/user/tasks",
     headers: this.headers,
     method: "POST",
-    json: todo
+    json: todo.values
+  }, callback(err, resp, body));
+},
+
+Habitica.prototype.updateTodo = function(todo, callback) {
+  request({
+    url: this.baseUrl + "/user/tasks/" + todo.values.id,
+    headers: this.headers,
+    method: "PUT",
+    json: todo.values
   }, callback(err, resp, body));
 }
+
 
 Habitica.prototype.updatedTodos = function(time, callback) {
   this.downloadTodos(function(todos) {
