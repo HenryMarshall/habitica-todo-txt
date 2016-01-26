@@ -5,6 +5,8 @@ var oldTxtTodos = options.txt.oldTodos
 var Dropbox = require('./dropbox');
 var Habitica = require('./habitica');
 var txtDiffer = require("./txtDiffer");
+var habMatcher = require("./habMatcher");
+var todoFactory = require("./todoFactory");
 
 var drop = new Dropbox("/todo/api_test.todo.txt", options.access_token);
 var hab = new Habitica(options.habitica);
@@ -17,35 +19,48 @@ var data = {
 sync(data)
 
 function sync(data) {
-  var updatedTodos = txtDiffer(data.oldTxtTodos, data.newTxtTodos)
-  // TODO: Habitica.createTodo
-  updatedTodos.created.forEach(todo => Habitica.createTodo);
+  // TODO dateCompleted should use the metadata from the last write to dropbox.
+  var dropboxDate = new Date().toISOString();
 
+  var updatedTodos = txtDiffer(data.oldTxtTodos, data.newTxtTodos)
   var overwritten = [];
 
-  // TODO dateCompleted should use the metadata from the last write to dropbox.
-  var dateCompleted = new Date().toISOString();
   updatedTodos.changed.forEach(todo => {
-    // TODO findHabTodo
-    var habTodo = findHabTodo(todo, data.habTodos)
-    if (todo.isCompleted) {
-      habTodo.dateCompleted = dateCompleted;
+    var habTodo = habMatcher(todo, data.habTodos);
+    if (habTodo) {
+      if (todo.isCompleted) {
+        habTodo.values.dateCompleted = dropboxDate;
+      }
+      else {
+        delete habTodo.values.dateCompleted;
+      }
+      habTodo.values.completed = todo.isCompleted;
+      console.log("updated: " + JSON.stringify(habTodo, null, 2));
+      hab.updateTodo(habTodo);
+      overwritten.push(habTodo.id);
     }
+    // Even if there were only changes on the dropbox side of things, if no
+    // match can be found on Habitica, we need to create the todo from scratch.
     else {
-      delete existingHabTodo.dateCompleted;
+      updatedTodos.created.push(todo);
     }
-    // TODO Habitica.updateTodo
-    Habitica.updateTodo(habTodo);
-    overwritten.push(habTodo.id);
   });
 
   updatedTodos.deleted.forEach(todo => {
-    // TODO findHabTodo
-    var habTodo = findHabTodo(todo, data.habTodos);
-    // TODO Habitica.deleteTodo
-    Habitica.deleteTodo(habTodo);
-    overwritten.push(habTodo.id);
+    var habTodo = habMatcher(todo, data.habTodos);
+    if (habTodo) {
+      hab.deleteTodo(habTodo);
+      console.log("deleted: " + JSON.stringify(habTodo, null, 2));
+      overwritten.push(habTodo.id);
+    }
   });
+
+  updatedTodos.created.forEach(todo => {
+    var habTodo = todoFactory(todo.text, todo.isCompleted, dropboxDate);
+    console.log("created: " + JSON.stringify(habTodo, null, 2));
+    hab.createTodo(habTodo);
+  });
+
 
 
 }
