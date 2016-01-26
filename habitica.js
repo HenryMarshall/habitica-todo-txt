@@ -41,7 +41,7 @@ Habitica.prototype.createTodo = function(todo, callback) {
     headers: this.headers,
     method: "POST",
     json: todo.values
-  }, callback(err, resp, body));
+  }, callback);
 },
 
 Habitica.prototype.updateTodo = function(todo, callback) {
@@ -50,7 +50,7 @@ Habitica.prototype.updateTodo = function(todo, callback) {
     headers: this.headers,
     method: "PUT",
     json: todo.values
-  }, callback(err, resp, body));
+  }, callback);
 }
 
 Habitica.prototype.deleteTodo = function(todo, callback) {
@@ -58,7 +58,7 @@ Habitica.prototype.deleteTodo = function(todo, callback) {
     url: this.baseUrl + "/user/tasks/" + todo.values.id,
     headers: this.headers,
     method: "DELETE"
-  }, callback(err, resp, body));
+  }, callback);
 }
 
 Habitica.prototype.updatedTodos = function(time, callback) {
