@@ -1,4 +1,7 @@
-module.exports = function(event) {
+var doc = require('dynamodb-doc');
+var dynamo = new doc.DynamoDB();
+
+module.exports = function(event, context) {
   var data = {
     TableName: "HabiticaSync",
     Item: event

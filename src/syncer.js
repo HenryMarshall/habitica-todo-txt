@@ -3,7 +3,7 @@ var habMatcher = require("./habMatcher");
 var todoFactory = require("./todoFactory");
 var dynamoStateUpdate = require("./dynamoStateUpdate");
 
-function sync(data, event, drop, hab) {
+function sync(data, event, context, drop, hab) {
   var asyncStatus = {
     txtUploaded: false,
     habCreated: false,
@@ -86,7 +86,7 @@ function sync(data, event, drop, hab) {
     }
   });
   
-  todosToAppend = linesToAdd.join("\n");
+  var todosToAppend = linesToAdd.join("\n");
   txtString += "\n" + todosToAppend;
   txtString = txtString.replace(/\n{2,}/, "\n");
   drop.uploadTodos(txtString, (err, resp, body) => {
@@ -103,7 +103,7 @@ function sync(data, event, drop, hab) {
       var keys = Object.keys(asyncStatus);
       if (keys.every(key => asyncStatus[key])){
         event.habLastSync = new Date().toISOString();
-        dynamoStateUpdate(event);
+        dynamoStateUpdate(event, context);
       }
     }
     return counter;

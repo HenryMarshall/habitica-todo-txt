@@ -1,6 +1,5 @@
 var request = require('request');
 var Todo = require('./todo');
-var options = require('./options');
 
 function Habitica(credentials) {
   this.headers = {

@@ -11,7 +11,7 @@ function run(event, context) {
   fetchData(event, (data) => {
     // In light of the fact I'm sending event over anyway, perhaps it would be
     // better to fetchData over in sync.
-    sync(data, event, drop, hab);
+    sync(data, event, context, drop, hab);
   });
 
   function fetchData(event, callback) {
@@ -40,5 +40,5 @@ function run(event, context) {
   }
 }
 
-module.exports = run;
-//exports.handler = run;
+//module.exports = run;
+exports.handler = run;

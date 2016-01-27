@@ -1,6 +1,5 @@
 var request = require("request");
 var txtParser = require("./txtParser");
-var options = require("./options");
 
 function Dropbox(todoPath, accessToken) {
   this.todoPath = todoPath;

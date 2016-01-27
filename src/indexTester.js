@@ -11,5 +11,6 @@ var event = {
 };
 
 console.log("about to run `run`");
+console.log(event);
 
-run(event);
+//run(event);
