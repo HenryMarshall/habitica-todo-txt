@@ -1,6 +1,7 @@
 *.swp
 *.swo
 build/
+sample_data/
 node_modules/
 options.js
 *.zip
