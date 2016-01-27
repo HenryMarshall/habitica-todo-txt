@@ -15,7 +15,6 @@ Dropbox.prototype.defaultHeaders = function() {
 };
 
 Dropbox.prototype.downloadTodos = function(callback) {
-
   request({
     url: "https://content.dropboxapi.com/2/files/download",
     headers: {
@@ -29,6 +28,24 @@ Dropbox.prototype.downloadTodos = function(callback) {
     var todos = txtParser(body);
     callback(todos);
   });
+};
+
+Dropbox.prototype.uploadTodos = function(todos, callback) {
+  request({
+    url: "https://content.dropboxapi.com/2/files/upload",
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + this.accessToken,
+      "Dropbox-API-Arg": JSON.stringify({
+        "path": this.todoPath,
+        "mode": "overwrite",
+        "autorename": false,
+        "mute": true
+      }),
+      "Content-Type": "application/octet-stream"
+    },
+    body: todos
+  }, callback);
 };
 
 module.exports = Dropbox;

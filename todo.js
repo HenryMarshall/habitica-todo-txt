@@ -12,7 +12,7 @@ Todo.prototype.wasUpdatedSince = function(time) {
 };
 
 Todo.prototype.toString = function() {
-  // Should take format: "x 2016-01-17 2016-01-19 Complete my project"
+  // formats to: "x 2016-01-17 2016-01-19 Complete my project"
   var components = [];
   components.push(formatDateString(this.values.dateCreated));
   if (this.values.completed) {
