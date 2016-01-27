@@ -1,6 +1,5 @@
 var request = require('request');
 var Todo = require('./todo');
-var options = require('./options');
 
 function Habitica(credentials) {
   this.headers = {
@@ -18,7 +17,7 @@ Habitica.prototype.tasks = function(callback) {
   }, callback);
 }
 
-Habitica.prototype.todos = function(callback) {
+Habitica.prototype.downloadTodos = function(callback) {
   this.tasks(function(err, resp, body) {
     if (err) throw err;
     var tasks = JSON.parse(body);
@@ -35,8 +34,34 @@ Habitica.prototype.todos = function(callback) {
   });
 }
 
+Habitica.prototype.createTodo = function(todo, callback) {
+  request({
+    url: this.baseUrl + "/user/tasks",
+    headers: this.headers,
+    method: "POST",
+    json: todo.values
+  }, callback);
+},
+
+Habitica.prototype.updateTodo = function(todo, callback) {
+  request({
+    url: this.baseUrl + "/user/tasks/" + todo.values.id,
+    headers: this.headers,
+    method: "PUT",
+    json: todo.values
+  }, callback);
+}
+
+Habitica.prototype.deleteTodo = function(todo, callback) {
+  request({
+    url: this.baseUrl + "/user/tasks/" + todo.values.id,
+    headers: this.headers,
+    method: "DELETE"
+  }, callback);
+}
+
 Habitica.prototype.updatedTodos = function(time, callback) {
-  this.todos(function(todos) {
+  this.downloadTodos(function(todos) {
     var updatedTodos = todos.filter(function(todo) {
       return todo.wasUpdatedSince(time);
     });
@@ -45,10 +70,3 @@ Habitica.prototype.updatedTodos = function(time, callback) {
 }
 
 module.exports = Habitica;
-
-var habit = new Habitica(options.habitica);
-habit.updatedTodos(new Date("2016-01-18"), function(todos) {
-  todos.forEach(function(todo) {
-    console.log(todo.formatTxt());
-  })
-});
