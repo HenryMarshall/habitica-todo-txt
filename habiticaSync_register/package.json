@@ -1,0 +1,14 @@
+{
+  "name": "lambda_register",
+  "version": "1.0.0",
+  "description": "Fetches dropbox token and saves to dynamoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Henry Baughman",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.67.0"
+  }
+}

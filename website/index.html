@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Link your Todo.txt file and Habitica account!</title>
+  <style>
+    a, label, button {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sync your Todo.txt file and Habitica Account</h1>
+  <a href="https://habitica.com/#/options/settings/api">
+    Get your Habitica User ID and API Token
+  </a>
+  <a href="https://www.dropbox.com/1/oauth2/authorize/?response_type=code&client_id=3gerywrqpkk1j5j">
+    Get your Dropbox Auth Code
+  </a>
+  <form>
+    <label for="habUserId">Habitica User ID</label>
+    <input name="habUserId" id="habUserId" type="input">
+    <label for="habApiKey">Habitica API Token</label>
+    <input name="habApiKey" id="habApiKey" type="input">
+    <label for="dropCode">Dropbox Code</label>
+    <input name="dropCode" id="dropCode" type="input">
+    <label for="todoPath">Path to your todo</label>
+    <input name="todoPath" id="todoPath" type="text" placeholder="/todo/todo.txt">
+    <input type="submit" id="link-button" value="Link!">
+  </form>
+
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.28.min.js"></script>
+  <script src="./credentials.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>

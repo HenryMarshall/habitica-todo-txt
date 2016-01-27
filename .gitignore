@@ -4,4 +4,6 @@ build/
 sample_data/
 node_modules/
 options.js
+credentials.js
+config.json
 *.zip
