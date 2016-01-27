@@ -25,8 +25,7 @@ Dropbox.prototype.downloadTodos = function(callback) {
     }
   }, (err, resp, body) => {
     if (err) throw err;
-    var todos = txtParser(body);
-    callback(todos);
+    callback(body);
   });
 };
 
