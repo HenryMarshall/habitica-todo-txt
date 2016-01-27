@@ -9,7 +9,9 @@ function run(event, context) {
   var hab = new Habitica({ apiKey: event.habApiKey, userId: event.habUserId });
 
   fetchData(event, (data) => {
-    sync(data, drop, hab);
+    // In light of the fact I'm sending event over anyway, perhaps it would be
+    // better to fetchData over in sync.
+    sync(data, event, drop, hab);
   });
 
   function fetchData(event, callback) {

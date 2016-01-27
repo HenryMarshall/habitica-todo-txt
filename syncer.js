@@ -1,29 +1,25 @@
-// options are values for dev purposes.
-//var options = require('./options');
-
 var txtDiffer = require("./txtDiffer");
 var habMatcher = require("./habMatcher");
 var todoFactory = require("./todoFactory");
+var dynamoStateUpdate = require("./dynamoStateUpdate");
 
-//var drop = new Dropbox("/todo/api_test.todo.txt", options.access_token);
-//var hab = new Habitica(options.habitica);
-//
-//var data = {
-//  newTxtTodos: options.txt.newTodos,
-//  oldTxtTodos: options.txt.oldTodos,
-//  txtString: options.txt.newTodosText,
-//  lastHabSync: new Date(options.habitica.lastHabSync),
-//  habTodos: options.habitica.todos.map(todo => new Todo(todo))
-//}
-//sync(data)
+function sync(data, event, drop, hab) {
+  var asyncStatus = {
+    txtUploaded: false,
+    habCreated: false,
+    habChanged: false,
+    habDeleted: false
+  };
+  var txtString = data.newTxtString;
 
-function sync(data, drop, hab) {
   // TODO dateCompleted should use the metadata from the last write to dropbox.
   var dropboxDate = new Date().toISOString();
 
   var updatedTodos = txtDiffer(data.oldTxtTodos, data.newTxtTodos)
   var overwritten = [];
 
+  var changedCount = updatedTodos.changed.length;
+  if (changedCount === 0) asyncStatus.habChanged = true;
   updatedTodos.changed.forEach(todo => {
     var habTodo = habMatcher(todo, data.habTodos);
     if (habTodo) {
@@ -34,34 +30,49 @@ function sync(data, drop, hab) {
         delete habTodo.values.dateCompleted;
       }
       habTodo.values.completed = todo.isCompleted;
-      hab.updateTodo(habTodo);
       overwritten.push(habTodo.values.id);
+      hab.updateTodo(habTodo, () => {
+        changedCount = asyncComplete(changedCount, "habChanged");
+      });
     }
     // Even if there were only changes on the dropbox side of things, if no
     // match can be found on Habitica, we need to create the todo from scratch.
     else {
       updatedTodos.created.push(todo);
+      changedCount = asyncComplete(changedCount, "habChanged");
     }
   });
 
+
+  var deletedCount = updatedTodos.deleted.length;
+  if (deletedCount === 0) asyncStatus.habDeleted = true;
   updatedTodos.deleted.forEach(todo => {
     var habTodo = habMatcher(todo, data.habTodos);
     if (habTodo) {
-      hab.deleteTodo(habTodo);
       overwritten.push(habTodo.values.id);
+      hab.deleteTodo(habTodo, () => {
+        deletedCount = asyncComplete(deletedCount, "habDeleted");
+      });
+    }
+    else {
+      deletedCount = asyncComplete(deletedCount, "habDeleted");
     }
   });
 
+  // TODO: DRY this out
+  var createdCount = updatedTodos.created.length;
+  if (createdCount === 0) asyncStatus.habCreated = true;
   updatedTodos.created.forEach(todo => {
     var habTodo = todoFactory(todo.text, todo.isCompleted, dropboxDate);
-    hab.createTodo(habTodo);
+    hab.createTodo(habTodo, () => {
+      createdCount = asyncComplete(createdCount, "habCreated");
+    });
   });
 
 
   // Now we sync todos from habitica to todo.txt
   var linesToAdd = [];
   var lastHabSync = data.lastHabSync;
-  var txtString = data.newTxtString;
   data.habTodos.forEach(habTodo => {
     var todoOverwritten = overwritten.indexOf(habTodo.values.id) !== -1;
     if (habTodo.wasUpdatedSince(lastHabSync) && !todoOverwritten) {
@@ -79,9 +90,24 @@ function sync(data, drop, hab) {
   txtString += "\n" + todosToAppend;
   txtString = txtString.replace(/\n{2,}/, "\n");
   drop.uploadTodos(txtString, (err, resp, body) => {
-    console.log(JSON.stringify(resp, null, 2));
-    console.log(JSON.stringify(body, null, 2));
-  })
+    event.oldTxtTodos = txtString;
+    // The txtUploaded values uniquely doesn't have a count so pass in 0
+    asyncComplete(0, "txtUploaded");
+  });
+
+  asyncComplete(0, "noUpdates");
+
+  function asyncComplete(counter, type) {
+    if (--counter <= 0) {
+      asyncStatus[type] = true;
+      var keys = Object.keys(asyncStatus);
+      if (keys.every(key => asyncStatus[key])){
+        event.habLastSync = new Date().toISOString();
+        dynamoStateUpdate(event);
+      }
+    }
+    return counter;
+  }
 }
 
 function fetchNewTodos(callback) {
