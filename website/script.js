@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-var lambda = new AWS.Lambda(credentials);
+var lambda = new AWS.Lambda(config);
 
 $("#link-button").on("click", function(evt) {
   evt.preventDefault();
