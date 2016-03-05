@@ -7,3 +7,4 @@ options.js
 credentials.js
 config.js*
 *.zip
+*/bower_components/
