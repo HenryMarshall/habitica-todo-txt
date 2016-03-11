@@ -1,3 +1,35 @@
 li {
   margin-top: 30px;
 }
+
+.logo-row {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+  .logo {
+    flex: 1 1;
+  }
+
+    .logo img {
+      width: 100%;
+    }
+
+  .logo-link {
+    flex: 1 2;
+    margin: 0 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+    .logo-link .glyphicon-link{
+      font-size: 120px;
+    }
+
+    .logo-link p {
+      margin-top: 10px;
+    }
