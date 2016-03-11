@@ -1,0 +1,76 @@
+/* Never resize for bootstrap md or lg */
+@media (min-width: 970px) {
+  .container {
+    width: 750px;
+  }
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+  section {
+    flex: 1 0 auto;
+  }
+
+  footer {
+    border-top: 1px solid rgb(189, 189, 189);
+    padding-top: 8px;
+    color: rgb(189, 189, 189);
+  }
+
+ol {
+  padding-left: 15px;
+}
+  li {
+    margin-top: 30px;
+  }
+
+.logo-row {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+  .logo {
+    flex: 1 1;
+  }
+
+    .logo img {
+      width: 100%;
+    }
+
+  .logo-link {
+    flex: 1 2;
+    margin: 0 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+    .logo-link .glyphicon-link{
+      font-size: 110px;
+    }
+
+    @media (max-width: 420px) {
+      .logo-link .glyphicon-link {
+        font-size: 72px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .logo-link p {
+        display: none;
+      }
+    }
+
+    .logo-link p {
+      margin-top: 10px;
+    }

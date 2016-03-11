@@ -2,36 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Link your Todo.txt file and Habitica account!</title>
-  <style>
-    a, label, button {
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/">
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css">
+  <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css">
+  <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
-  <h1>Sync your Todo.txt file and Habitica Account</h1>
-  <a href="https://habitica.com/#/options/settings/api">
-    Get your Habitica User ID and API Token
-  </a>
-  <a href="https://www.dropbox.com/1/oauth2/authorize/?response_type=code&client_id=3gerywrqpkk1j5j">
-    Get your Dropbox Auth Code
-  </a>
-  <form>
-    <label for="habUserId">Habitica User ID</label>
-    <input name="habUserId" id="habUserId" type="input">
-    <label for="habApiKey">Habitica API Token</label>
-    <input name="habApiKey" id="habApiKey" type="input">
-    <label for="dropCode">Dropbox Code</label>
-    <input name="dropCode" id="dropCode" type="input">
-    <label for="todoPath">Path to your todo</label>
-    <input name="todoPath" id="todoPath" type="text" placeholder="/todo/todo.txt">
-    <input type="submit" id="link-button" value="Link!">
-  </form>
+  <div class="container">
+
+    <!-- We don't use bootstrap .row here because we need flexbox for -->
+    <!-- vertically aligning the link gyphicon -->
+    <div class="logo-row">
+      <div class="logo">
+        <a href="http://habitica.com">
+          <img src="/images/habitica_logo_inverted_small.png" alt="Habitica">
+        </a>
+      </div>
+
+      <div class="logo-link">
+        <div>
+          <span class="glyphicon glyphicon-link"></span>
+          <p>Powered by<br>Dropbox</p>
+        </div>
+      </div>
+
+      <div class="logo">
+        <a href="http://todotxt.com">
+          <img src="/images/todotxt_logo.png" alt="Todo.txt">
+        </a>
+      </div>
+    </div>
+
+    <section>
+      <form>
+        <ol>
+          <li>
+            Copy and paste your 
+            <a href="https://habitica.com/#/options/settings/api">
+              Habitica User ID and API Token
+            </a>
+
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group label-static">
+                  <label class="control-label" for="habUserId">Habitica User ID</label>
+                  <input class="form-control" name="habUserId" id="habUserId" type="text">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+
+              <div class="col-xs-6">
+                <div class="form-group label-static">
+                  <label class="control-label" for="habApiKey">Habitica API Token</label>
+                  <input class="form-control" name="habApiKey" id="habApiKey" type="text">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+            </div>
+
+          </li>
+
+          <li>
+            Where do you keep your todo.txt file in Dropbox?
+            <div class="form-group label-static">
+              <label class="control-label" for="todoPath">Path to your todo</label>
+              <input class="form-control" name="todoPath" id="todoPath" type="text">
+              <p class="help-block">Example: /todo/todo.txt</p>
+
+          </li>
+
+          <li>
+            <a href="https://www.dropbox.com/1/oauth2/authorize/?response_type=code&client_id=3gerywrqpkk1j5j">
+              Authorize
+            </a> your Dropbox Account
+            <div class="form-group label-static">
+              <label class="control-label" for="dropCode">Dropbox Code</label>
+              <input class="form-control" name="dropCode" id="dropCode" type="input">
+              <span class="material-input"></span>
+            </div>
+          </li>
+        </ol>
+
+        <input class="btn btn-primary btn-raised btn-block" type="submit" id="link-button" value="Link Todo Lists!">
+      </form>
+    </section>
+
+    <footer>
+      <p>
+        Provided under <a href="https://opensource.org/licenses/MIT">MIT license</a>
+        by <a href="https://github.com/hbaughman/">Henry Baughman</a>.
+        Code available <a href="https://github.com/hbaughman/habitica-todo-txt">on Github</a>
+      </p>
+
+      <p>This tool is not affiliated with Github, Habitica, Todo.txt, or Dropbox</p>
+    </footer>
+  
+  </div>
 
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/bootstrap-material-design/dist/js/material.js"></script>
+  <script src="/bower_components/bootstrap-material-design/dist/js/ripples.js"></script>
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.28.min.js"></script>
-  <script src="./credentials.js"></script>
-  <script src="./script.js"></script>
+  <script src="/config.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>
