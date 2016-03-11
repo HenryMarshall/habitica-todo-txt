@@ -16,11 +16,12 @@ function getToken(event, context, callback) {
     },
     form: params
   }, function(err, resp, body) {
-    //context.succeed(JSON.stringify(body));
-    //callback("dummy_token");
-    //if (err) context.fail(err);
-    var token = JSON.parse(body).access_token;
-    callback(token);
+    if (err) context.fail("dropbox request failed");
+
+    body = JSON.parse(body);
+    if (body.error) context.fail("dropbox auth failed");
+
+    callback(body.access_token);
   });
 }
 
