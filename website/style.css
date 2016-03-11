@@ -6,9 +6,23 @@
 }
 
 .container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
   padding-left: 30px;
   padding-right: 30px;
 }
+
+  section {
+    flex: 1 0 auto;
+  }
+
+  footer {
+    border-top: 1px solid rgb(189, 189, 189);
+    padding-top: 8px;
+    color: rgb(189, 189, 189);
+  }
 
 ol {
   padding-left: 15px;

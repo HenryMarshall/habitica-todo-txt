@@ -38,60 +38,68 @@
       </div>
     </div>
 
-    <form>
-      <ol>
-        <li>
-          Copy and paste your 
-          <a href="https://habitica.com/#/options/settings/api">
-            Habitica User ID and API Token
-          </a>
+    <section>
+      <form>
+        <ol>
+          <li>
+            Copy and paste your 
+            <a href="https://habitica.com/#/options/settings/api">
+              Habitica User ID and API Token
+            </a>
 
-          <div class="row">
-            <div class="col-xs-6">
-              <div class="form-group label-static">
-                <label class="control-label" for="habUserId">Habitica User ID</label>
-                <input class="form-control" name="habUserId" id="habUserId" type="text">
-                <span class="material-input"></span>
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group label-static">
+                  <label class="control-label" for="habUserId">Habitica User ID</label>
+                  <input class="form-control" name="habUserId" id="habUserId" type="text">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+
+              <div class="col-xs-6">
+                <div class="form-group label-static">
+                  <label class="control-label" for="habApiKey">Habitica API Token</label>
+                  <input class="form-control" name="habApiKey" id="habApiKey" type="text">
+                  <span class="material-input"></span>
+                </div>
               </div>
             </div>
 
-            <div class="col-xs-6">
-              <div class="form-group label-static">
-                <label class="control-label" for="habApiKey">Habitica API Token</label>
-                <input class="form-control" name="habApiKey" id="habApiKey" type="text">
-                <span class="material-input"></span>
-              </div>
+          </li>
+
+          <li>
+            Where do you keep your todo.txt file in Dropbox?
+            <div class="form-group label-static">
+              <label class="control-label" for="todoPath">Path to your todo</label>
+              <input class="form-control" name="todoPath" id="todoPath" type="text">
+              <p class="help-block">Example: /todo/todo.txt</p>
+
+          </li>
+
+          <li>
+            <a href="https://www.dropbox.com/1/oauth2/authorize/?response_type=code&client_id=3gerywrqpkk1j5j">
+              Authorize
+            </a> your Dropbox Account
+            <div class="form-group label-static">
+              <label class="control-label" for="dropCode">Dropbox Code</label>
+              <input class="form-control" name="dropCode" id="dropCode" type="input">
+              <span class="material-input"></span>
             </div>
-          </div>
+          </li>
+        </ol>
 
-        </li>
-
-        <li>
-          Where do you keep your todo.txt file in Dropbox?
-          <div class="form-group label-static">
-            <label class="control-label" for="todoPath">Path to your todo</label>
-            <input class="form-control" name="todoPath" id="todoPath" type="text">
-            <p class="help-block">Example: /todo/todo.txt</p>
-
-        </li>
-
-        <li>
-          <a href="https://www.dropbox.com/1/oauth2/authorize/?response_type=code&client_id=3gerywrqpkk1j5j">
-            Authorize
-          </a> your Dropbox Account
-          <div class="form-group label-static">
-            <label class="control-label" for="dropCode">Dropbox Code</label>
-            <input class="form-control" name="dropCode" id="dropCode" type="input">
-            <span class="material-input"></span>
-          </div>
-        </li>
-      </ol>
-
-      <input class="btn btn-primary btn-raised" type="submit" id="link-button" value="Link Todo Lists!">
-    </form>
+        <input class="btn btn-primary btn-raised btn-block" type="submit" id="link-button" value="Link Todo Lists!">
+      </form>
+    </section>
 
     <footer>
+      <p>
+        Provided under <a href="https://opensource.org/licenses/MIT">MIT license</a>
+        by <a href="https://github.com/hbaughman/">Henry Baughman</a>.
+        Code available <a href="https://github.com/hbaughman/habitica-todo-txt">on Github</a>
+      </p>
 
+      <p>This tool is not affiliated with Github, Habitica, Todo.txt, or Dropbox</p>
     </footer>
   
   </div>
