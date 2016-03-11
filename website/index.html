@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/bower_components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css">
   <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css">
+  <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
   <div class="container">
@@ -21,17 +22,24 @@
             Habitica User ID and API Token
           </a>
 
-          <div class="form-group label-static">
-            <label class="control-label" for="habUserId">Habitica User ID</label>
-            <input class="form-control" name="habUserId" id="habUserId" type="text">
-            <span class="material-input"></span>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group label-static">
+                <label class="control-label" for="habUserId">Habitica User ID</label>
+                <input class="form-control" name="habUserId" id="habUserId" type="text">
+                <span class="material-input"></span>
+              </div>
+            </div>
+
+            <div class="col-xs-6">
+              <div class="form-group label-static">
+                <label class="control-label" for="habApiKey">Habitica API Token</label>
+                <input class="form-control" name="habApiKey" id="habApiKey" type="text">
+                <span class="material-input"></span>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group label-static">
-            <label class="control-label" for="habApiKey">Habitica API Token</label>
-            <input class="form-control" name="habApiKey" id="habApiKey" type="text">
-            <span class="material-input"></span>
-          </div>
         </li>
 
         <li>
