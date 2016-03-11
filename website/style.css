@@ -5,9 +5,17 @@
   }
 }
 
-li {
-  margin-top: 30px;
+.container {
+  padding-left: 30px;
+  padding-right: 30px;
 }
+
+ol {
+  padding-left: 15px;
+}
+  li {
+    margin-top: 30px;
+  }
 
 .logo-row {
   margin-top: 40px;
@@ -34,7 +42,19 @@ li {
   }
 
     .logo-link .glyphicon-link{
-      font-size: 120px;
+      font-size: 110px;
+    }
+
+    @media (max-width: 420px) {
+      .logo-link .glyphicon-link {
+        font-size: 72px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .logo-link p {
+        display: none;
+      }
     }
 
     .logo-link p {
